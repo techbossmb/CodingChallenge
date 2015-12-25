@@ -11,22 +11,21 @@ import java.io.*;
  * */
 public class WordGrid{
 	
-    static ArrayList<Node> nodes = new ArrayList<>();
-    static ArrayList<String> foundWords = new ArrayList<>();
-    static Set<String> dictionary = new HashSet<>(); //for O(1) complexity on .contains()
+static ArrayList<Node> nodes = new ArrayList<>();
+static ArrayList<String> foundWords = new ArrayList<>();
+static Set<String> dictionary = new HashSet<>(); //for O(1) complexity on .contains()
     
-    public static void main(String[] args){
-		WordGrid wordGrid = new WordGrid();
-		nodes = wordGrid.buildNodes();
+public static void main(String[] args){
+	WordGrid wordGrid = new WordGrid();
+	nodes = wordGrid.buildNodes();
         String[] newWords = {"abc", "bcei", "cedi", "edg", "fehi", "ghi"};
         dictionary = wordGrid.buildDictionary(dictionary, newWords);
         //use all nodes as starting node
-        for(int i = 0; i < nodes.size(); i++){
-			Node _curNode = nodes.get(i);
-			wordGrid.searchWordRecursive(_curNode.value, _curNode);
-			wordGrid.unmarkNodes(nodes);
-		}
-		System.out.println(foundWords);
+        for(Node cell:grid){
+		wordGrid.searchWordRecursive(cell.value, cell);
+		wordGrid.unmarkNodes(grid);
+	}
+	System.out.println(foundWords);
 	}
 	
 	/*DFS search for a words contained in the dictionary that appear on the grid
