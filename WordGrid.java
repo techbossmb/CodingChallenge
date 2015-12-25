@@ -23,7 +23,6 @@ public static void main(String[] args){
         //use all nodes as starting node
         for(Node cell:grid){
 		wordGrid.searchWordRecursive(cell.value, cell);
-		wordGrid.unmarkNodes(grid);
 	}
 	System.out.println(foundWords);
 	}
@@ -48,14 +47,6 @@ public static void main(String[] args){
 			}
 		}
 		curNode.isVisited = false;
-	}
-	
-	/*clear all nodes once done
-	 * */
-	private void unmarkNodes(ArrayList<Node> nodes){
-		for(Node node:nodes){
-			node.isVisited = false;
-		}
 	}
     
     /* populates dictionary
