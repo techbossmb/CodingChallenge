@@ -49,10 +49,7 @@ class TrieDictionary{
 	
 	public void printWords(Node curNode, String str, ArrayList<String> foundWords){
 		str += curNode.letter;
-		if(curNode.isWord){
-			foundWords.add(str);
-		}
-
+		if(curNode.isWord)foundWords.add(str);
 		for(Node node:curNode.nextLetters){
 			printWords(node, str, foundWords);
 		}	
