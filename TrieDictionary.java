@@ -1,13 +1,12 @@
 import java.util.*;
 import java.io.*;
 /* 
- * Trie implementation of a dictionary supports insert, print
+ * Trie implementation of a dictionary supports insertWord, isPrefix, isFullWord, printWords
  * dictionary file download from:
  * http://scrabblehelper.googlecode.com/svn-history/r20/trunk/ScrabbleHelper/src/dictionaries/sowpods.txt
  * alternatively, you could use the usr/share/dict/words file (if using a unix system) 
  * @author: Ishola Babatunde
  * @date:12/27/15
- * @todo: isPrefix, contains
 */
 class TrieDictionary{
 	
@@ -47,9 +46,44 @@ class TrieDictionary{
 		curNode.isWord = true;//last character isWord
 	}
 	
+	public boolean isPrefix(Node curNode, String word){
+		return isPrefix(curNode, word, false);
+	}
+	
+	public boolean isFullWord(Node curNode, String word){
+		return isPrefix(curNode, word, true);	
+	}
+	
+	public boolean isPrefix(Node curNode, String prefix, boolean checkWord){
+		if(curNode == null)return false;
+		if(prefix.isEmpty())return true;//empty string is a prefix to any string
+		char[] prfx = prefix.toCharArray();
+		for(int i = 0; i < prfx.length; i++){
+			ArrayList<Character> charsLink = new ArrayList<>();
+			for(int j=0; j < curNode.nextLetters.size(); j++){
+				charsLink.add(curNode.nextLetters.get(j).letter);
+			}
+			if(!charsLink.contains(prfx[i]))return false;
+			curNode = curNode.nextLetters.get(charsLink.indexOf(prfx[i]));
+		}
+		
+		if(!checkWord){
+			return true;
+		}else{//checking is the last node isWord
+			if(curNode.isWord){
+				return true;
+			}else{
+				return false;
+			}		
+		}
+	}
+	
 	public void printWords(Node curNode, String str, ArrayList<String> foundWords){
 		str += curNode.letter;
-		if(curNode.isWord)foundWords.add(str);
+		if(curNode.isWord){
+			foundWords.add(str);
+		}
+
 		for(Node node:curNode.nextLetters){
 			printWords(node, str, foundWords);
 		}	
@@ -59,10 +93,16 @@ class TrieDictionary{
 		Node root = new Node('\0');
 		TrieDictionary trieDictionary = new TrieDictionary();
 		String fileName = "sowpods.txt";
+		System.out.println("Building Trie Dictionary");
 		Node dictionary = trieDictionary.buildDictionaryTrieFromFile(fileName);
-		ArrayList<String> foundWords = new ArrayList<>();
-		trieDictionary.printWords(dictionary, "", foundWords);
-		System.out.println(foundWords);
+		System.out.print("Done\nEnter word check isPrefix:");
+		Scanner scanner = new Scanner(System.in);
+		String prefixToFind = scanner.next();
+		System.out.println(trieDictionary.isPrefix(dictionary, prefixToFind.toUpperCase()));
+		
+		System.out.print("Enter word check isFullWord:");
+		String wordToFind = scanner.next();
+		System.out.println(trieDictionary.isFullWord(dictionary, wordToFind.toUpperCase()));
 	}
 }
 
