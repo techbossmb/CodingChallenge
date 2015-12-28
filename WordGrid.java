@@ -25,7 +25,7 @@ public class WordGrid{
         dictionary = wordGrid.buildDictionary(dictionary, newWords);*/
         trie = new TrieDictionary("sowpods.txt");
 		System.out.println("done building dictionary");
-		dictionary_trie = trie.dictionary;
+		dictionary_trie = TrieDictionary.dictionary;
         //use all nodes as starting node
         for(Node cell:grid){
 			wordGrid.searchWordRecursive(String.valueOf(cell.value), cell);
