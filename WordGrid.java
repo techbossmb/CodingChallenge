@@ -19,19 +19,19 @@ public class WordGrid{
     static TrieDictionary trie;
     
     public static void main(String[] args){
-		WordGrid wordGrid = new WordGrid();
-		grid = wordGrid.buildNodes();
+	WordGrid wordGrid = new WordGrid();
+	grid = wordGrid.buildNodes();
         /*String[] newWords = {"abc", "abcfi", "bcei", "cedi", "edg", "fehi", "ghi"};
         dictionary = wordGrid.buildDictionary(dictionary, newWords);*/
         trie = new TrieDictionary("sowpods.txt");
-		System.out.println("done building dictionary");
-		dictionary_trie = TrieDictionary.dictionary;
+	System.out.println("done building dictionary");
+	dictionary_trie = TrieDictionary.dictionary;
         //use all nodes as starting node
         for(Node cell:grid){
-			wordGrid.searchWordRecursive(String.valueOf(cell.value), cell);
-		}
-		System.out.println(foundWords);
+		wordGrid.searchWordRecursive(String.valueOf(cell.value), cell);
 	}
+	System.out.println(foundWords);
+    }
 	
 	/*DFS search for a words contained in the dictionary that appear on the grid
 	 * max word possible is 9 for a 3 x 3 grid if no duplication
