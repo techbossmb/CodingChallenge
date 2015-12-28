@@ -9,12 +9,17 @@ import java.io.*;
  * @date:12/27/15
 */
 class TrieDictionary{
+	public static TrieNode dictionary;
 	
-	private Node buildDictionaryTrieFromFile(String fileName){	
+	public TrieDictionary(){}
+	public TrieDictionary(String fileName){
+		dictionary = buildDictionaryTrieFromFile(fileName);
+	}
+	private TrieNode buildDictionaryTrieFromFile(String fileName){	
 	if(fileName == null)return null;
 		String line = null;
 		BufferedReader bufferedReader = null;
-		Node dictionary = new Node('\0');
+		TrieNode dictionary = new TrieNode('\0');
 		try{
 			FileReader fileReader = new FileReader(fileName);
 			bufferedReader = new BufferedReader(fileReader);
@@ -37,24 +42,24 @@ class TrieDictionary{
 		return dictionary;
 	}
 	
-	public void insertWord(Node root, String value){
+	public void insertWord(TrieNode root, String value){
 		char[] letters = value.toCharArray();
-		Node curNode = root;
+		TrieNode curNode = root;
 		for(int i = 0; i < letters.length; i++){
 			curNode = curNode.addNextLetter(letters[i]);
 		}
 		curNode.isWord = true;//last character isWord
 	}
 	
-	public boolean isPrefix(Node curNode, String word){
+	public boolean isPrefix(TrieNode curNode, String word){
 		return isPrefix(curNode, word, false);
 	}
 	
-	public boolean isFullWord(Node curNode, String word){
+	public boolean isFullWord(TrieNode curNode, String word){
 		return isPrefix(curNode, word, true);	
 	}
 	
-	public boolean isPrefix(Node curNode, String prefix, boolean checkWord){
+	public boolean isPrefix(TrieNode curNode, String prefix, boolean checkWord){
 		if(curNode == null)return false;
 		if(prefix.isEmpty())return true;//empty string is a prefix to any string
 		char[] prfx = prefix.toCharArray();
@@ -78,23 +83,26 @@ class TrieDictionary{
 		}
 	}
 	
-	public void printWords(Node curNode, String str, ArrayList<String> foundWords){
+	public void printWords(TrieNode curNode, String str, ArrayList<String> foundWords){
 		str += curNode.letter;
 		if(curNode.isWord){
 			foundWords.add(str);
 		}
 
-		for(Node node:curNode.nextLetters){
+		for(TrieNode node:curNode.nextLetters){
 			printWords(node, str, foundWords);
 		}	
 	}
 	
 	public static void main(String[] args){
-		Node root = new Node('\0');
+		TrieNode root = new TrieNode('\0');
 		TrieDictionary trieDictionary = new TrieDictionary();
 		String fileName = "sowpods.txt";
 		System.out.println("Building Trie Dictionary");
-		Node dictionary = trieDictionary.buildDictionaryTrieFromFile(fileName);
+		dictionary = trieDictionary.buildDictionaryTrieFromFile(fileName);
+		//ArrayList<String> foundWords = new ArrayList<>();
+		//trieDictionary.printWords(dictionary, "", foundWords);
+		//System.out.println(foundWords);
 		System.out.print("Done\nEnter word check isPrefix:");
 		Scanner scanner = new Scanner(System.in);
 		String prefixToFind = scanner.next();
@@ -106,18 +114,18 @@ class TrieDictionary{
 	}
 }
 
-class Node{
+class TrieNode{
 	char letter;
-	ArrayList<Node> nextLetters;
+	ArrayList<TrieNode> nextLetters;
 	boolean isWord;
 	
-	public Node(char letter){
+	public TrieNode(char letter){
 		this.letter = letter;
 		this.isWord = false;
 		nextLetters = new ArrayList<>();
 	}
 	
-	public Node(char letter, boolean isWord){
+	public TrieNode(char letter, boolean isWord){
 		this.letter = letter;
 		this.isWord = isWord;
 		nextLetters = new ArrayList<>();
@@ -126,8 +134,8 @@ class Node{
 	/*
 	 * add the next letter in the word to the trie 
 	 * */
-	public Node addNextLetter(char nextLetter){
-		Node currentNode = null;
+	public TrieNode addNextLetter(char nextLetter){
+		TrieNode currentNode = null;
 		int currentIndex;
 		
 		ArrayList<Character> charsLink = new ArrayList<>();
@@ -135,7 +143,7 @@ class Node{
 			charsLink.add(nextLetters.get(i).letter);
 		}
 		if((currentIndex = charsLink.indexOf(nextLetter)) == -1){
-			Node letter = new Node(nextLetter);
+			TrieNode letter = new TrieNode(nextLetter);
 			this.nextLetters.add(letter);
 			currentNode = letter;
 		}else{
