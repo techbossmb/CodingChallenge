@@ -6,25 +6,31 @@ import java.io.*;
  * find all possible words that can be formed by traversing through the grid in all 8 direction
  * @author: Ishola Babatunde
  * @date: 12/24/2015
- * @todo: Need to implement dictionary as a Trie to provide isPrefix() function for backtracking
- *        Build graph appropriately (automate) - get rid of manual buildNodes()
+ * @todo: Build graph appropriately (automate) - get rid of manual buildNodes()
+ * @note: HashSet has been replaced by Trie data structure to provide a isPrefix for backtracking
+ *        hashset code has been commented and replaced by trie - see TrieDictionary
  * */
 public class WordGrid{
 	
-static ArrayList<Node> nodes = new ArrayList<>();
-static ArrayList<String> foundWords = new ArrayList<>();
-static Set<String> dictionary = new HashSet<>(); //for O(1) complexity on .contains()
+    static ArrayList<Node> grid = new ArrayList<>();
+    static ArrayList<String> foundWords = new ArrayList<>();
+    /*static Set<String> dictionary = new HashSet<>(); //for O(1) complexity on .contains()*/
+    static TrieNode dictionary_trie;
+    static TrieDictionary trie;
     
-public static void main(String[] args){
-	WordGrid wordGrid = new WordGrid();
-	nodes = wordGrid.buildNodes();
-        String[] newWords = {"abc", "bcei", "cedi", "edg", "fehi", "ghi"};
-        dictionary = wordGrid.buildDictionary(dictionary, newWords);
+    public static void main(String[] args){
+		WordGrid wordGrid = new WordGrid();
+		grid = wordGrid.buildNodes();
+        /*String[] newWords = {"abc", "abcfi", "bcei", "cedi", "edg", "fehi", "ghi"};
+        dictionary = wordGrid.buildDictionary(dictionary, newWords);*/
+        trie = new TrieDictionary("sowpods.txt");
+		System.out.println("done building dictionary");
+		dictionary_trie = trie.dictionary;
         //use all nodes as starting node
         for(Node cell:grid){
-		wordGrid.searchWordRecursive(cell.value, cell);
-	}
-	System.out.println(foundWords);
+			wordGrid.searchWordRecursive(String.valueOf(cell.value), cell);
+		}
+		System.out.println(foundWords);
 	}
 	
 	/*DFS search for a words contained in the dictionary that appear on the grid
@@ -33,7 +39,7 @@ public static void main(String[] args){
 	 * */
 	private void searchWordRecursive(String curStr, Node curNode){
 		curNode.isVisited = true;
-		if(dictionary.contains(curStr)){
+		if(trie.isFullWord(dictionary_trie, curStr)){
 			foundWords.add(curStr);
 		}
 		
@@ -41,12 +47,20 @@ public static void main(String[] args){
 		for(int i = 0; i < neighbours.size(); i++){
 			Node curNeighbour = neighbours.get(i);
 			if(!curNeighbour.isVisited){
-				String newStr = curStr.concat(curNeighbour.value);
-				if(newStr.length() <=  9)
+				String newStr = curStr.concat(String.valueOf(curNeighbour.value));
+				if(newStr.length() <=  9 && trie.isPrefix(dictionary_trie, newStr))
 					searchWordRecursive(newStr, curNeighbour);
 			}
 		}
 		curNode.isVisited = false;
+	}
+	
+	/*clear all nodes once done
+	 * */
+	private void unmarkNodes(ArrayList<Node> nodes){
+		for(Node node:nodes){
+			node.isVisited = false;
+		}
 	}
     
     /* populates dictionary
@@ -65,15 +79,15 @@ public static void main(String[] args){
     */
     private ArrayList<Node> buildNodes(){
 		ArrayList<Node> nodes = new ArrayList<>();
-        Node nodeA = new Node("a");
-        Node nodeB = new Node("b");
-        Node nodeC = new Node("c");
-        Node nodeD = new Node("d");
-        Node nodeE = new Node("e");
-        Node nodeF = new Node("f");
-        Node nodeG = new Node("g");
-        Node nodeH = new Node("h");
-        Node nodeI = new Node("i");
+        Node nodeA = new Node('A');
+        Node nodeB = new Node('B');
+        Node nodeC = new Node('C');
+        Node nodeD = new Node('D');
+        Node nodeE = new Node('E');
+        Node nodeF = new Node('F');
+        Node nodeG = new Node('G');
+        Node nodeH = new Node('H');
+        Node nodeI = new Node('I');
         nodeA.addNeighbours(new Node[]{nodeB, nodeE, nodeD});
         nodeB.addNeighbours(new Node[]{nodeC, nodeA, nodeD, nodeE, nodeF});
         nodeC.addNeighbours(new Node[]{nodeB, nodeE, nodeF});
@@ -103,11 +117,11 @@ public static void main(String[] args){
  * Need to analyse the complexity of using a Node class
  * */
 class Node{
-    public String value = null;
-    public ArrayList<Node> neighbours = null;
-    public Boolean isVisited = false;
+    public char value;
+    public ArrayList<Node> neighbours;
+    public boolean isVisited;
     
-    public Node(String value){
+    public Node(char value){
         this.value = value;
         this.neighbours = new ArrayList<>();
     }
@@ -123,6 +137,6 @@ class Node{
     }
     
     public String toString(){
-		return this.value;
+		return String.valueOf(this.value);
 	}
 }
