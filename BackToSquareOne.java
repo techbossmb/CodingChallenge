@@ -6,6 +6,17 @@ import java.util.regex.*;
 /*
 * IEEEXtreme 8.0
 * https://www.hackerrank.com/contests/ieeextreme-challenges/challenges/back-to-square-1
+* <problem_description>
+* Write a program that determines the expected number of turns needed for a player to reach the final square.
+* For example, consider the board below with n = 3 and p(1) = 0.5 and p(2) = 0.25. 
+* A player moves to square 1 on their first turn. 
+* With probability p(1) , they move to square 2 on their second turn, but with probability 1- p(1) , 
+* they remain on square 1. If they were lucky and made it to square 2 on their second turn, 
+* they advance to square 3 on their third turn with probability p(2) , 
+* but they would go back to square 1 with probability 1- p(2) . 
+* Thus, a really lucky player could finish is 3 turns. However, on average, 
+* it would take 13 turns for a player to make it to square 3.
+* </problem_description>
 */
 public class BackToSquareOne{
 
